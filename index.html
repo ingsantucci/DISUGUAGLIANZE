@@ -1,0 +1,1413 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Visualizzare per Capire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+:root{
+  --bg:#F3F6FA; --grid:#E0E7EF; --panel:#FFFFFF; --panel2:#F6F8FB; --ink:#16202B; --muted:#55657A; --line:#C9D3DE;
+  --accent:#2347C6; --accent-soft:#E1E7FA; --pa:#2347C6; --pb:#8A3DB4;
+  --pos:#137A3A; --pos-soft:#DBF0E2; --neg:#C22C24; --neg-soft:#FBE1DE; --flip:#D56700; --flip-soft:#FFE8CF;
+  --shadow:0 1px 2px rgba(22,32,43,.05),0 8px 24px rgba(22,32,43,.06);
+  --font:'Atkinson Hyperlegible','Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --display:'Bricolage Grotesque','Atkinson Hyperlegible','Segoe UI',Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0D141B; --grid:#17212B; --panel:#141E28; --panel2:#19242F; --ink:#E2E9F0; --muted:#9AAABB; --line:#2A3947;
+    --accent:#8BA8FF; --accent-soft:#1C294B; --pa:#8BA8FF; --pb:#D29CF3;
+    --pos:#4CC57B; --pos-soft:#122F1F; --neg:#FF6E65; --neg-soft:#3A1815; --flip:#FFA23F; --flip-soft:#3A260F;
+    --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0D141B; --grid:#17212B; --panel:#141E28; --panel2:#19242F; --ink:#E2E9F0; --muted:#9AAABB; --line:#2A3947;
+  --accent:#8BA8FF; --accent-soft:#1C294B; --pa:#8BA8FF; --pb:#D29CF3;
+  --pos:#4CC57B; --pos-soft:#122F1F; --neg:#FF6E65; --neg-soft:#3A1815; --flip:#FFA23F; --flip-soft:#3A260F;
+  --shadow:none;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; color:var(--ink); font-family:var(--font); font-size:17px; line-height:1.5;
+  background-color:var(--bg);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px;
+}
+.wrap{max-width:1060px;margin:0 auto;padding-inline:16px;padding-block:22px 64px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(30px,5.4vw,50px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(22px,3.4vw,30px);font-weight:800}
+h3{font-size:20px;font-weight:700}
+p{margin:0}
+b{font-weight:700}
+.eyebrow{font-size:13px;text-transform:uppercase;letter-spacing:.09em;color:var(--accent);font-weight:700}
+.sub{color:var(--muted);font-size:18px;margin-top:6px}
+header{display:grid;gap:14px;margin-bottom:18px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend svg{width:34px;height:14px;overflow:visible}
+
+/* tabs */
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.tab{
+  font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid var(--line);border-radius:12px;
+  padding:10px 12px;text-align:left;cursor:pointer;display:grid;gap:2px;min-height:64px
+}
+.tab .tn{font-family:var(--display);font-weight:800;font-size:17px;line-height:1.15}
+.tab .th{font-size:13px;color:var(--muted);line-height:1.25}
+.tab .tk{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.06em}
+.tab[aria-selected="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 -4px 0 var(--accent)}
+.tab:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--flip);outline-offset:2px}
+@media (max-width:720px){.tabs{grid-template-columns:repeat(2,1fr)}}
+
+.panel{display:grid;gap:16px}
+.intro{display:grid;gap:6px;max-width:68ch}
+.intro p{color:var(--muted);font-size:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:grid;gap:14px;box-shadow:var(--shadow);min-width:0}
+@media (max-width:520px){.card{padding:14px 14px}}
+.card h3 .k{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--accent);color:var(--panel);font-size:15px;margin-right:8px;vertical-align:2px}
+.hint{color:var(--muted);font-size:15px}
+.two{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){.two{grid-template-columns:1fr}}
+
+/* controls */
+.controls{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
+.field{display:inline-flex;align-items:center;gap:8px;font-weight:700}
+.field.grow{flex:1 1 260px;flex-wrap:wrap}
+.field.grow input[type=range]{flex:1 1 180px}
+output{font-variant-numeric:tabular-nums;min-width:2.4em;display:inline-block;text-align:center;background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:0 6px}
+input[type=number],input[type=text]{
+  font:inherit;font-weight:700;width:4.2em;padding:5px 6px;border:1.5px solid var(--line);border-radius:8px;
+  background:var(--panel2);color:var(--ink);text-align:center;font-variant-numeric:tabular-nums
+}
+input[type=text]{width:7em}
+input[type=range]{accent-color:var(--accent);height:28px;cursor:pointer}
+.btn{
+  font:inherit;font-weight:700;border-radius:10px;padding:8px 14px;border:1.5px solid var(--accent);
+  background:var(--accent);color:var(--panel);cursor:pointer;display:inline-flex;align-items:center;gap:6px
+}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.pos{background:var(--pos);border-color:var(--pos)}
+.btn.neg{background:var(--neg);border-color:var(--neg)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  font:inherit;font-size:16px;border:1.5px solid var(--line);background:var(--panel2);color:var(--ink);
+  border-radius:999px;padding:5px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:4px
+}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel2)}
+.segbtn .sym{margin:0}
+.segbtn{font:inherit;font-size:22px;border:0;background:transparent;color:var(--ink);padding:4px 12px;cursor:pointer;line-height:1.1;min-width:44px}
+.segbtn+.segbtn{border-left:1.5px solid var(--line)}
+.segbtn[aria-pressed="true"]{background:var(--accent);color:var(--panel)}
+.segbtn.txt{font-size:15px;font-weight:700;padding:6px 12px}
+
+/* math */
+.m{white-space:nowrap}
+.bigmath{font-size:clamp(24px,4.2vw,36px);font-weight:700;line-height:1.7;font-variant-numeric:tabular-nums}
+.midmath{font-size:clamp(20px,3vw,26px);font-weight:700;line-height:1.7}
+.sym{display:inline-block;line-height:1;vertical-align:-.12em;margin:0 .12em}
+.sym svg{width:.92em;height:.92em;display:block;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.flipper{display:inline-block;padding:.08em .14em;margin:0 .15em;vertical-align:.02em;border-radius:10px;transition:transform .75s cubic-bezier(.35,1.55,.5,1),color .3s,background-color .3s,box-shadow .3s}
+.flipper.is-flipped{transform:rotateY(180deg);color:var(--flip);background:var(--flip-soft);box-shadow:0 0 0 3px var(--flip)}
+.frac{display:inline-flex;flex-direction:column;align-items:stretch;vertical-align:middle;text-align:center;font-size:.9em;line-height:1.15;margin:0 .1em}
+.frac>span{padding:0 .2em}
+.frac>span+span{border-top:2px solid currentColor;padding-top:.08em}
+.rad{display:inline-flex;align-items:stretch;vertical-align:middle;margin:0 .05em}
+.rad-s{width:.62em;height:auto;min-height:1.1em;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.rad-in{border-top:2px solid currentColor;padding:.1em .15em 0 .1em;display:inline-flex;align-items:center}
+sup{font-size:.62em;line-height:0}
+.conj{font-weight:400;color:var(--muted);font-size:.8em;margin:0 .15em}
+
+/* steps */
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.steps li{display:grid;gap:6px;padding:10px 14px;border-left:4px solid var(--line);background:var(--panel2);border-radius:0 10px 10px 0}
+.steps .lbl{font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.relrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.relcol{background:var(--panel2);border-radius:12px;padding:10px 14px;display:grid;gap:2px;justify-items:center}
+.cap{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+
+/* message boxes */
+.note{padding:10px 14px;border-radius:10px;background:var(--panel2);border:1.5px solid var(--line)}
+.note.pos{background:var(--pos-soft);border-color:var(--pos)}
+.note.neg{background:var(--neg-soft);border-color:var(--neg)}
+.note.flip{background:var(--flip-soft);border-color:var(--flip)}
+.note.accent{background:var(--accent-soft);border-color:var(--accent)}
+.alarm{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;padding:14px 16px;border-radius:12px;border:2.5px solid var(--neg);background:var(--neg-soft)}
+.alarm .ico{grid-row:span 2;color:var(--neg);font-size:44px}
+.alarm .t{font-family:var(--display);font-weight:800;font-size:clamp(19px,2.6vw,24px);color:var(--neg);line-height:1.2}
+.shake{animation:shake .45s}
+@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+.good{color:var(--pos)} .bad{color:var(--neg)} .fl{color:var(--flip)}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{border:1.5px solid var(--line);border-radius:10px;padding:6px 10px;font-size:15px;color:var(--muted);display:inline-flex;align-items:center;gap:5px}
+.badge.on{border-color:var(--accent);background:var(--accent-soft);color:var(--ink);font-weight:700}
+
+/* svg graphs */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+svg.graph{width:100%;height:auto;display:block;background:var(--panel);border-radius:10px}
+svg text{font-family:var(--font)}
+.grid line{stroke:var(--grid);stroke-width:1}
+.axes line{stroke:var(--ink);stroke-width:1.6}
+.arrowhead{fill:var(--ink)}
+text.tick{fill:var(--muted);font-size:12px}
+text.axn{fill:var(--ink);font-size:15px;font-weight:700;font-style:italic}
+.curve{fill:none;stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round}
+.curve.pos{stroke:var(--pos)}
+.curve.neg{stroke:var(--neg);stroke-dasharray:11 8;stroke-linecap:butt}
+.curve.ghost{stroke:var(--muted);stroke-width:2.5;stroke-dasharray:2 7;stroke-linecap:round;opacity:.8}
+.curve.fn{stroke:var(--accent);stroke-width:3}
+.solband{stroke:var(--accent);stroke-width:12;opacity:.32}
+.domok{stroke:var(--pos);stroke-width:10;opacity:.55}
+.domno{stroke:var(--neg);stroke-width:10;opacity:.35;stroke-dasharray:6 5}
+.ep-in{fill:var(--accent);stroke:var(--accent);stroke-width:2.5}
+.ep-out{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
+.root{fill:var(--panel);stroke:var(--ink);stroke-width:2.5}
+.lbl-t{fill:var(--ink);font-size:14px;font-weight:700;paint-order:stroke;stroke:var(--panel);stroke-width:5px;stroke-linejoin:round}
+.lbl-m{fill:var(--muted);font-size:13px;paint-order:stroke;stroke:var(--panel);stroke-width:5px;stroke-linejoin:round}
+.cross{stroke:var(--neg);stroke-width:3.5;stroke-linecap:round}
+.mk-ok{fill:var(--pos);stroke:var(--panel);stroke-width:1.5}
+.trace{fill:var(--accent);opacity:.55}
+.curpt{fill:var(--accent);stroke:var(--panel);stroke-width:2.5}
+.drop{stroke:var(--accent);stroke-width:1.5;stroke-dasharray:4 4}
+.forbid{fill:var(--neg);opacity:.14}
+
+/* number line tab 1 */
+.nl-axis{stroke:var(--ink);stroke-width:2}
+.nl-tick{stroke:var(--muted);stroke-width:1.5}
+.nl-num{fill:var(--muted);font-size:13px}
+.cap-t{fill:var(--muted);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.pt{transition:transform .65s cubic-bezier(.3,1.25,.5,1)}
+.pt.pa circle{fill:var(--pa)} .pt.pb circle{fill:var(--pb)}
+.pt-t{fill:var(--panel);font-size:12px;font-weight:700}
+.zero-mark{stroke:var(--flip);stroke-width:2;stroke-dasharray:3 4}
+
+/* castle */
+.c-lab{fill:var(--ink);font-size:15px;font-weight:700}
+.c-labs{fill:var(--muted);font-size:12px;font-weight:700;letter-spacing:.06em}
+.c-guide{stroke:var(--line);stroke-width:1.5;stroke-dasharray:3 4}
+.c-pos{stroke:var(--pos);stroke-width:4.5;stroke-linecap:round}
+.c-neg{stroke:var(--neg);stroke-width:4.5;stroke-dasharray:10 7}
+.c-sp{fill:var(--pos);font-size:16px;font-weight:700}
+.c-sn{fill:var(--neg);font-size:18px;font-weight:700}
+.c-zero{fill:var(--panel);stroke:var(--ink);stroke-width:2}
+.c-zt{fill:var(--ink);font-size:13px;font-weight:700}
+.c-cell{fill:var(--panel2);stroke:var(--line);stroke-width:1.5}
+.c-cell.on{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2.5}
+.c-cell.click{cursor:pointer}
+.c-cell.right{stroke:var(--pos);stroke-width:3}
+.c-cell.wrong{stroke:var(--neg);stroke-width:3;fill:var(--neg-soft)}
+.c-big{font-size:24px;font-weight:700;pointer-events:none}
+.c-big.p{fill:var(--pos)} .c-big.n{fill:var(--neg)} .c-big.q{fill:var(--muted)}
+.c-pt{font-size:14px;font-weight:700;fill:var(--ink)}
+.c-hdr{stroke:var(--ink);stroke-width:2}
+svg.castle{display:block;height:auto;background:var(--panel)}
+
+/* factor editor */
+.facs{display:grid;gap:8px}
+.fac{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:8px 10px;border:1.5px solid var(--line);border-radius:12px;background:var(--panel2)}
+.fac.err{border-color:var(--neg)}
+.fac .poly{display:inline-flex;align-items:center;gap:5px;font-weight:700;font-size:18px}
+.fac .poly input{width:3.4em}
+.fac .x{font-style:italic}
+.iconbtn{font:inherit;border:1.5px solid var(--line);background:var(--panel);color:var(--muted);border-radius:8px;width:36px;height:36px;cursor:pointer;display:inline-grid;place-items:center;font-size:18px;margin-left:auto}
+.iconbtn:disabled{opacity:.35;cursor:not-allowed}
+.errmsg{color:var(--neg);font-size:14px;font-weight:700;flex-basis:100%}
+
+/* quiz */
+.quiz .opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.quiz .opts{grid-template-columns:1fr}}
+.opt{font:inherit;font-size:20px;font-weight:700;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--panel2);color:var(--ink);cursor:pointer;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.25em}
+.opt.right{border-color:var(--pos);background:var(--pos-soft)}
+.opt.wrong{border-color:var(--neg);background:var(--neg-soft)}
+.qhead{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
+.counter{font-size:14px;color:var(--muted);font-weight:700}
+
+/* domain */
+.fnshow{font-size:clamp(24px,4.4vw,38px);font-weight:700;line-height:1.8}
+.calc{font-size:clamp(19px,2.8vw,24px);font-weight:700;line-height:1.9}
+.tally{display:flex;gap:16px;flex-wrap:wrap;font-weight:700;font-size:15px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+footer{margin-top:28px;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion:reduce){
+  .flipper,.pt{transition:none}
+  .shake{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <div class="eyebrow">Laboratorio interattivo di matematica</div>
+    <h1>Visualizzare per Capire</h1>
+    <p class="sub">Dalle disequazioni grafiche al dominio delle funzioni</p>
+  </div>
+  <div class="legend" aria-label="Legenda dei colori">
+    <span><svg viewBox="0 0 34 14" aria-hidden="true"><line x1="2" y1="7" x2="32" y2="7" class="c-pos"/></svg>positivo (+), linea continua</span>
+    <span><svg viewBox="0 0 34 14" aria-hidden="true"><line x1="2" y1="7" x2="32" y2="7" class="c-neg"/></svg>negativo (&minus;), tratteggio</span>
+    <span><svg viewBox="0 0 34 14" aria-hidden="true"><rect x="8" y="0" width="18" height="14" rx="4" style="fill:var(--flip-soft);stroke:var(--flip);stroke-width:2"/></svg>verso girato</span>
+    <span><svg viewBox="0 0 34 14" aria-hidden="true"><path d="M11 1 23 13M23 1 11 13" class="cross"/></svg>valore vietato</span>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Schede del laboratorio">
+  <button class="tab" role="tab" id="t-bilancia" aria-controls="bilancia" aria-selected="true"><span class="tk">SCHEDA 1</span><span class="tn">La bilancia</span><span class="th">Il verso che si gira</span></button>
+  <button class="tab" role="tab" id="t-parabola" aria-controls="parabola" aria-selected="false"><span class="tk">SCHEDA 2</span><span class="tn">La parabola</span><span class="th">Il segno e il discriminante</span></button>
+  <button class="tab" role="tab" id="t-castello" aria-controls="castello" aria-selected="false"><span class="tk">SCHEDA 3</span><span class="tn">Il castello dei segni</span><span class="th">Disequazioni fratte</span></button>
+  <button class="tab" role="tab" id="t-dominio" aria-controls="dominio" aria-selected="false"><span class="tk">SCHEDA 4</span><span class="tn">Il dominio</span><span class="th">Prova un valore di x</span></button>
+</nav>
+
+<main>
+<!-- ================= SCHEDA 1 ================= -->
+<section class="panel" id="bilancia" role="tabpanel" aria-labelledby="t-bilancia">
+  <div class="intro">
+    <h2>Perché il verso si gira?</h2>
+    <p>Se moltiplichi o dividi entrambi i membri per un numero <b>negativo</b>, la disuguaglianza cambia verso. Prima guardalo succedere, poi usalo.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="k">A</span>Due numeri sulla retta</h3>
+    <p class="hint">Scegli due numeri A e B. Poi muovi il cursore k: moltiplica <b>entrambi</b> per k e guarda dove finiscono.</p>
+    <div class="controls">
+      <label class="field">A = <input id="b-A" type="number" min="-5" max="5" step="1" value="2"></label>
+      <label class="field">B = <input id="b-B" type="number" min="-5" max="5" step="1" value="5"></label>
+      <label class="field grow">k = <output id="b-kout">2</output><input id="b-k" type="range" min="-3" max="3" step="0.5" value="2" aria-label="Valore di k"></label>
+    </div>
+    <div class="scroll"><svg id="b-line" class="graph" viewBox="0 0 720 190" style="min-width:520px" role="img" aria-label="Retta dei numeri prima e dopo la moltiplicazione per k"></svg></div>
+    <div class="relrow">
+      <div class="relcol"><div class="cap">prima</div><div class="bigmath"><span id="b-r1l"></span><span id="b-r1s"></span><span id="b-r1r"></span></div></div>
+      <div class="relcol"><div class="cap">dopo (moltiplico per k)</div><div class="bigmath"><span id="b-r2l"></span><span class="flipper" id="b-r2s"></span><span id="b-r2r"></span></div></div>
+    </div>
+    <p id="b-msg" class="note"></p>
+  </div>
+
+  <div class="card">
+    <h3><span class="k">B</span>Risolvi una disequazione di 1° grado</h3>
+    <div class="chips" id="b-presets"></div>
+    <div class="controls">
+      <div class="field" style="flex-wrap:wrap;font-size:20px">
+        <input id="b-a" type="number" step="1" value="-2" aria-label="Coefficiente di x"><span class="x">x</span> +
+        <input id="b-b" type="number" step="1" value="0" aria-label="Termine noto a sinistra">
+        <span class="seg" id="b-relseg"></span>
+        <input id="b-c" type="number" step="1" value="6" aria-label="Termine a destra">
+      </div>
+    </div>
+    <ol class="steps">
+      <li><span class="lbl">La disequazione</span><div class="bigmath" id="b-s1"></div></li>
+      <li id="b-s2row"><span class="lbl">Porto il numero a destra, cambiandogli il segno</span><div class="bigmath" id="b-s2"></div></li>
+      <li>
+        <span class="lbl">Divido entrambi i membri per d = <output id="b-dout">1</output></span>
+        <input id="b-d" type="range" min="-6" max="6" step="1" value="1" aria-label="Divisore d">
+        <div class="bigmath"><span id="b-s3l"></span><span class="flipper" id="b-s3s"></span><span id="b-s3r"></span></div>
+        <p id="b-s3msg" class="note"></p>
+      </li>
+    </ol>
+    <div id="b-result" class="panel" style="gap:12px"></div>
+  </div>
+
+  <div class="card quiz">
+    <div class="qhead"><h3>Mettiti alla prova</h3><span class="counter" id="q1-score"></span></div>
+    <div class="bigmath" id="q1-text"></div>
+    <p class="hint">Qual è la soluzione? Tocca la risposta.</p>
+    <div class="opts" id="q1-opts"></div>
+    <p id="q1-fb" class="note" hidden></p>
+    <div><button class="btn ghost" id="q1-new" type="button">Nuovo esercizio</button></div>
+  </div>
+</section>
+
+<!-- ================= SCHEDA 2 ================= -->
+<section class="panel" id="parabola" role="tabpanel" aria-labelledby="t-parabola" hidden>
+  <div class="intro">
+    <h2>La parabola racconta il segno</h2>
+    <p>Dove la parabola sta <b class="good">sopra</b> l'asse x il trinomio è positivo, dove sta <b class="bad">sotto</b> è negativo. Il discriminante <span id="p-dsym"></span> dice quante volte tocca l'asse.</p>
+  </div>
+  <div class="two">
+    <div class="card">
+      <div class="chips" id="p-presets"></div>
+      <div class="controls">
+        <label class="field grow">a = <output id="p-aout"></output><input id="p-a" type="range" min="0" max="5" step="1" value="3" aria-label="Coefficiente a"></label>
+        <label class="field grow">b = <output id="p-bout"></output><input id="p-b" type="range" min="-8" max="8" step="1" value="-2" aria-label="Coefficiente b"></label>
+        <label class="field grow">c = <output id="p-cout"></output><input id="p-c" type="range" min="-10" max="10" step="1" value="-3" aria-label="Coefficiente c"></label>
+      </div>
+      <div class="scroll"><svg id="p-graph" class="graph" role="img" aria-label="Grafico della parabola" style="min-width:360px"></svg></div>
+      <p class="hint" id="p-cap"></p>
+    </div>
+    <div class="panel" style="gap:12px">
+      <div class="card">
+        <div class="row"><span class="field">Richiesta:</span><span class="seg" id="p-relseg"></span></div>
+        <ol class="steps">
+          <li><span class="lbl">La disequazione</span><div class="midmath" id="p-orig"></div></li>
+          <li id="p-normrow"><span class="lbl">Forma con a positivo</span><div class="midmath"><span id="p-nl"></span><span class="flipper" id="p-ns"></span><span>0</span></div><p id="p-normmsg" class="note"></p></li>
+          <li><span class="lbl">Il discriminante</span><div class="midmath" id="p-delta" style="font-size:20px"></div><div class="badges" id="p-badges"></div></li>
+        </ol>
+      </div>
+      <div class="card">
+        <p id="p-read"></p>
+        <div class="note accent"><div class="cap">Soluzione</div><div class="midmath" id="p-sol"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card quiz">
+    <div class="qhead"><h3>Mettiti alla prova: leggi il grafico</h3><span class="counter" id="q2-score"></span></div>
+    <div class="two">
+      <div><svg id="q2-graph" class="graph" role="img" aria-label="Parabola dell'esercizio"></svg></div>
+      <div class="panel" style="gap:10px">
+        <div class="midmath" id="q2-text"></div>
+        <div class="opts" id="q2-opts" style="grid-template-columns:1fr"></div>
+        <p id="q2-fb" class="note" hidden></p>
+        <div><button class="btn ghost" id="q2-new" type="button">Nuovo esercizio</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCHEDA 3 ================= -->
+<section class="panel" id="castello" role="tabpanel" aria-labelledby="t-castello" hidden>
+  <div class="intro">
+    <h2>Il castello dei segni</h2>
+    <p>Studia il segno di ogni fattore su una riga. Poi moltiplica i segni colonna per colonna. I valori che annullano il denominatore sono <b class="bad">sempre vietati</b>.</p>
+  </div>
+  <div class="card">
+    <div class="chips" id="c-presets"></div>
+    <div class="facs" id="c-facs"></div>
+    <div class="row">
+      <button class="btn ghost" type="button" id="c-addN">+ fattore al numeratore</button>
+      <button class="btn ghost" type="button" id="c-addD">+ fattore al denominatore</button>
+      <span class="field" style="margin-left:auto">Richiesta: <span class="seg" id="c-relseg"></span> 0</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="bigmath" id="c-expr"></div>
+    <p id="c-ce" class="note neg"></p>
+    <div class="row"><label class="field" style="font-weight:400"><input type="checkbox" id="c-ex" style="width:20px;height:20px"> Completa tu l'ultima riga (tocca le caselle per scegliere + o &minus;)</label>
+      <button class="btn" type="button" id="c-check" hidden>Verifica</button></div>
+    <div class="scroll" id="c-wrap"><svg id="c-svg" class="castle" role="img" aria-label="Castello dei segni"></svg></div>
+    <p id="c-exfb" class="note" hidden></p>
+    <div class="note accent" id="c-solbox"><div class="cap">Soluzione</div><div class="midmath" id="c-sol"></div></div>
+  </div>
+</section>
+
+<!-- ================= SCHEDA 4 ================= -->
+<section class="panel" id="dominio" role="tabpanel" aria-labelledby="t-dominio" hidden>
+  <div class="intro">
+    <h2>Il tester del dominio</h2>
+    <p>Il dominio è l'insieme dei valori di x per cui <b>si può calcolare</b> la funzione. Prova tu: scegli un valore e guarda se il calcolo va a buon fine.</p>
+  </div>
+  <div class="card">
+    <div class="chips" id="d-funcs"></div>
+    <div class="fnshow" id="d-fn"></div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <div class="row">
+        <label class="field">x = <input id="d-x" type="text" inputmode="decimal" value="3" aria-label="Valore di x"></label>
+        <button class="btn" type="button" id="d-try">Calcola</button>
+      </div>
+      <div class="row">
+        <span class="hint">Oppure prima fai una previsione:</span>
+        <button class="btn ghost" type="button" id="d-pyes">Secondo me si può</button>
+        <button class="btn ghost" type="button" id="d-pno">Secondo me è vietato</button>
+      </div>
+      <label class="field grow" style="font-weight:400">Scorri x: <input id="d-slide" type="range" min="-8" max="8" step="0.1" value="3" aria-label="Scorri il valore di x"></label>
+      <div id="d-out" class="panel" style="gap:10px"></div>
+    </div>
+    <div class="card">
+      <svg id="d-graph" class="graph" role="img" aria-label="Piano cartesiano con i punti calcolati"></svg>
+      <div class="tally" id="d-tally"></div>
+      <div class="row">
+        <button class="btn ghost" type="button" id="d-showg">Mostra il grafico</button>
+        <button class="btn" type="button" id="d-reveal">Scopri il dominio</button>
+        <button class="btn ghost" type="button" id="d-reset">Cancella i tentativi</button>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="d-dombox" hidden>
+    <h3>Come si calcola il dominio (senza provare tutti i numeri)</h3>
+    <ol class="steps" id="d-steps"></ol>
+  </div>
+</section>
+</main>
+<footer>I simboli matematici (come <span id="f-syms"></span>) sono disegnati dentro la pagina: si vedono uguali su computer, LIM, tablet e telefono.</footer>
+</div>
+
+<script>
+'use strict';
+/* ================= utilità ================= */
+const MINUS = '−';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const SVGNS = 'http://www.w3.org/2000/svg';
+function S(tag, attrs, parent, text) {
+  const e = document.createElementNS(SVGNS, tag);
+  if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text != null) e.textContent = text;
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function clear(n) { while (n.firstChild) n.removeChild(n.firstChild); }
+const r9 = v => Math.round(v * 1e9) / 1e9;
+const isInt = v => Math.abs(v - Math.round(v)) < 1e-9;
+const sgn = v => v > 1e-12 ? 1 : v < -1e-12 ? -1 : 0;
+function num(n, dec = 2) {
+  const f = 10 ** dec;
+  n = Math.round(n * f) / f;
+  if (n === 0) return '0';
+  return (n < 0 ? MINUS : '') + Math.abs(n).toString().replace('.', ',');
+}
+function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a; }
+function ratio(p, q) {
+  if (!isInt(p) || !isInt(q) || Math.round(q) === 0) return null;
+  p = Math.round(p); q = Math.round(q);
+  if (q < 0) { p = -p; q = -q; }
+  const g = gcd(p, q) || 1;
+  return { p: p / g, q: q / g };
+}
+function frac(n, d) { return `<span class="frac"><span>${n}</span><span>${d}</span></span>`; }
+function fracTxt(p, q) {
+  const r = ratio(p, q);
+  if (!r) return num(p / q);
+  if (r.q === 1) return num(r.p);
+  return (r.p < 0 ? MINUS : '') + Math.abs(r.p) + '/' + r.q;
+}
+function fracHTML(p, q) {
+  const r = ratio(p, q);
+  if (!r) return num(p / q);
+  if (r.q === 1) return num(r.p);
+  return (r.p < 0 ? MINUS : '') + frac(Math.abs(r.p), r.q);
+}
+function rad(inner) {
+  return `<span class="rad" role="img" aria-label="radice quadrata di"><svg class="rad-s" viewBox="0 0 10 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0.6 14.5 3 13 6 23 9.6 0.9" vector-effect="non-scaling-stroke"/></svg><span class="rad-in">${inner}</span></span>`;
+}
+const randInt = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+/* Simboli disegnati in SVG: non dipendono dai font installati */
+const SYMP = {
+  '>': '<path d="M6 5 18 12 6 19"/>',
+  '<': '<path d="M18 5 6 12 18 19"/>',
+  '>=': '<path d="M6 3 18 9 6 15"/><path d="M6 20.5H18"/>',
+  '<=': '<path d="M18 3 6 9 18 15"/><path d="M6 20.5H18"/>',
+  '=': '<path d="M5 9H19M5 15H19"/>',
+  '!=': '<path d="M5 9H19M5 15H19M15.5 3.5 8.5 20.5"/>',
+  'approx': '<path d="M5 9.5c2.3-2.4 4.7-2.4 7 0s4.7 2.4 7 0M5 15.5c2.3-2.4 4.7-2.4 7 0s4.7 2.4 7 0"/>',
+  'delta': '<path d="M12 3.5 20.5 20.5H3.5Z"/>',
+  'inf': '<path d="M12 12c-2-3-3.6-4-5.3-4a4 4 0 0 0 0 8c1.7 0 3.3-1 5.3-4s3.6-4 5.3-4a4 4 0 0 1 0 8c-1.7 0-3.3-1-5.3-4Z"/>',
+  'arrow': '<path d="M3 12H20M14 6l6 6-6 6"/>',
+  'ok': '<path d="M5 12.5 10 17.5 19 7"/>',
+  'no': '<path d="M6 6 18 18M18 6 6 18"/>',
+  'warn': '<path d="M12 3 22 20.5H2Z"/><path d="M12 9.5v5M12 17.4v.1"/>',
+  'times': '<path d="M7.5 7.5 16.5 16.5M16.5 7.5 7.5 16.5"/>'
+};
+const SYML = { '>': 'maggiore di', '<': 'minore di', '>=': 'maggiore o uguale a', '<=': 'minore o uguale a', '=': 'uguale a', '!=': 'diverso da', approx: 'circa uguale a', delta: 'Delta', inf: 'infinito', arrow: 'quindi', ok: 'giusto', no: 'sbagliato', warn: 'attenzione', times: 'per' };
+function sym(k, cls = '') { return `<span class="sym ${cls}" role="img" aria-label="${SYML[k]}"><svg viewBox="0 0 24 24" aria-hidden="true">${SYMP[k]}</svg></span>`; }
+const FLIP = { '>': '<', '<': '>', '>=': '<=', '<=': '>=' };
+function holds(l, rel, r) {
+  l = r9(l); r = r9(r);
+  return rel === '>' ? l > r : rel === '<' ? l < r : rel === '>=' ? l >= r : rel === '<=' ? l <= r : rel === '=' ? l === r : l !== r;
+}
+/* il simbolo che ruota su se stesso: specchiando ">" si ottiene "<" */
+function setFlip(el, rel, flipped) {
+  if (el.dataset.rel !== rel) { el.innerHTML = sym(rel); el.dataset.rel = rel; }
+  el.classList.toggle('is-flipped', !!flipped);
+  const inner = el.querySelector('.sym');
+  if (inner) inner.setAttribute('aria-label', SYML[flipped ? FLIP[rel] : rel]);
+}
+
+/* polinomi: coefficienti dal grado più alto */
+function poly(co, mode = 'html') {
+  const deg = co.length - 1; let out = '';
+  co.forEach((c, i) => {
+    const p = deg - i; if (c === 0) return;
+    const a = Math.abs(c);
+    let body = (a === 1 && p > 0) ? '' : num(a);
+    if (p >= 1) body += 'x';
+    if (p === 2) body += mode === 'html' ? '<sup>2</sup>' : '²';
+    out += out === '' ? (c < 0 ? MINUS : '') + body : (c < 0 ? ` ${MINUS} ` : ' + ') + body;
+  });
+  return out || '0';
+}
+function subst(co, x) {
+  const deg = co.length - 1; let out = '';
+  const xs = x < 0 ? `(${num(x)})` : num(x);
+  co.forEach((c, i) => {
+    const p = deg - i; if (c === 0) return;
+    const a = Math.abs(c);
+    const body = p === 0 ? num(a) : (a === 1 ? '' : num(a) + '·') + xs + (p === 2 ? '<sup>2</sup>' : '');
+    out += out === '' ? (c < 0 ? MINUS : '') + body : (c < 0 ? ` ${MINUS} ` : ' + ') + body;
+  });
+  return out || '0';
+}
+const evalPoly = (co, x) => r9(co.reduce((acc, c) => acc * x + c, 0));
+
+/* zeri di un fattore (costante, 1° o 2° grado) */
+function factorZeros(co) {
+  if (co.length === 1) return co[0] === 0 ? null : [];
+  if (co.length === 2) {
+    const [a, b] = co; if (a === 0) return null;
+    return [{ v: r9(-b / a), txt: fracTxt(-b, a), html: fracHTML(-b, a) }];
+  }
+  const [a, b, c] = co; if (a === 0) return null;
+  const D = b * b - 4 * a * c;
+  if (D < 0) return [];
+  if (D === 0) return [{ v: r9(-b / (2 * a)), txt: fracTxt(-b, 2 * a), html: fracHTML(-b, 2 * a), double: true }];
+  const s = Math.sqrt(D), sq = isInt(s);
+  const mk = sg => {
+    const nu = -b + sg * s, v = r9(nu / (2 * a));
+    return sq ? { v, txt: fracTxt(nu, 2 * a), html: fracHTML(nu, 2 * a) } : { v, txt: num(v), html: num(v), approx: true };
+  };
+  return [mk(-1), mk(1)].sort((p, q) => p.v - q.v);
+}
+
+/* studio del segno generale: N e D sono elenchi di fattori */
+function solveSign(N, D, rel) {
+  const pts = [];
+  const add = (z, kind) => {
+    let p = pts.find(q => Math.abs(q.v - z.v) < 1e-9);
+    if (!p) { p = { ...z, nz: false, dz: false }; pts.push(p); }
+    p[kind] = true;
+  };
+  for (const co of N) { const zs = factorZeros(co); if (zs === null) return null; zs.forEach(z => add(z, 'nz')); }
+  for (const co of D) { const zs = factorZeros(co); if (zs === null) return null; zs.forEach(z => add(z, 'dz')); }
+  pts.sort((a, b) => a.v - b.v);
+  const n = pts.length, tests = [];
+  for (let i = 0; i <= n; i++) tests.push(n === 0 ? 0 : i === 0 ? pts[0].v - 1 : i === n ? pts[n - 1].v + 1 : (pts[i - 1].v + pts[i].v) / 2);
+  const rows = [...N.map(co => ({ co, where: 'N' })), ...D.map(co => ({ co, where: 'D' }))];
+  rows.forEach(r => {
+    r.signs = tests.map(t => sgn(evalPoly(r.co, t)));
+    r.zeros = factorZeros(r.co).map(z => pts.findIndex(p => Math.abs(p.v - z.v) < 1e-9));
+  });
+  const final = tests.map((t, i) => rows.reduce((s, r) => s * r.signs[i], 1));
+  const wantPos = rel[0] === '>', weak = rel.length === 2;
+  const iOk = final.map(s => wantPos ? s > 0 : s < 0);
+  const pOk = pts.map(p => !p.dz && p.nz && weak);
+  return { pts, rows, final, iOk, pOk, segs: buildSegs(pts, iOk, pOk) };
+}
+function buildSegs(pts, iOk, pOk) {
+  const n = pts.length, pieces = [];
+  for (let i = 0; i <= n; i++) { pieces.push({ t: 'I', i, ok: iOk[i] }); if (i < n) pieces.push({ t: 'P', i, ok: pOk[i] }); }
+  const lo = pc => pc.t === 'I' ? (pc.i === 0 ? { inf: true } : { p: pts[pc.i - 1], inc: false }) : { p: pts[pc.i], inc: true };
+  const hi = pc => pc.t === 'I' ? (pc.i === n ? { inf: true } : { p: pts[pc.i], inc: false }) : { p: pts[pc.i], inc: true };
+  const segs = []; let cur = null;
+  for (const pc of pieces) {
+    if (pc.ok) { if (!cur) cur = { lo: lo(pc) }; cur.hi = hi(pc); }
+    else if (cur) { segs.push(cur); cur = null; }
+  }
+  if (cur) segs.push(cur);
+  return segs;
+}
+/* tutti i reali tranne alcuni punti */
+function segsExcluding(zs) {
+  const pts = zs.map(z => ({ ...z }));
+  return { pts, segs: buildSegs(pts, pts.map(() => true).concat([true]), pts.map(() => false)) };
+}
+const M = s => `<span class="m">${s}</span>`;
+function segsHTML(segs) {
+  if (!segs.length) return 'nessuna soluzione: la disequazione è <b>impossibile</b>';
+  if (segs.length === 1 && segs[0].lo.inf && segs[0].hi.inf) return 'per <b>ogni</b> numero reale x';
+  const first = segs[0], last = segs[segs.length - 1];
+  const holes = first.lo.inf && last.hi.inf && segs.every((s, j) => j === segs.length - 1 ||
+    (s.hi.p && segs[j + 1].lo.p === s.hi.p && !s.hi.inc && !segs[j + 1].lo.inc));
+  if (holes) return segs.slice(0, -1).map(s => M(`x ${sym('!=')} ${s.hi.p.html}`)).join(' <span class="conj">e</span> ');
+  return segs.map(s => {
+    if (s.lo.inf) return M(`x ${sym(s.hi.inc ? '<=' : '<')} ${s.hi.p.html}`);
+    if (s.hi.inf) return M(`x ${sym(s.lo.inc ? '>=' : '>')} ${s.lo.p.html}`);
+    if (s.lo.p === s.hi.p) return M(`x ${sym('=')} ${s.lo.p.html}`);
+    return M(`${s.lo.p.html} ${sym(s.lo.inc ? '<=' : '<')} x ${sym(s.hi.inc ? '<=' : '<')} ${s.hi.p.html}`);
+  }).join(' <span class="conj">oppure</span> ');
+}
+const anyApprox = pts => pts.some(p => p.approx) ? ' <span class="hint">(valori arrotondati)</span>' : '';
+
+/* bottoni per scegliere il verso */
+function relSeg(host, rels, get, set) {
+  clear(host);
+  rels.forEach(r => {
+    const bt = document.createElement('button');
+    bt.type = 'button'; bt.className = 'segbtn'; bt.dataset.rel = r;
+    bt.innerHTML = sym(r); bt.setAttribute('aria-label', SYML[r] + ' zero');
+    bt.addEventListener('click', () => { set(r); syncSeg(host, r); });
+    host.appendChild(bt);
+  });
+  syncSeg(host, get());
+}
+function syncSeg(host, r) { $$('.segbtn', host).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.rel === r))); }
+
+/* cornice di un grafico cartesiano */
+function niceStep(range) {
+  const raw = range / 8, p = 10 ** Math.floor(Math.log10(raw));
+  for (const m of [1, 2, 5, 10]) if (m * p >= raw) return m * p;
+  return 10 * p;
+}
+function frame(svg, o) {
+  clear(svg);
+  const W = o.W, H = o.H;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const P = { l: 14, r: 18, t: 16, b: 14 };
+  const X = v => P.l + (v - o.xmin) / (o.xmax - o.xmin) * (W - P.l - P.r);
+  const Y = v => H - P.b - (v - o.ymin) / (o.ymax - o.ymin) * (H - P.t - P.b);
+  const defs = S('defs', null, svg), cid = svg.id + '-clip';
+  const cp = S('clipPath', { id: cid }, defs);
+  S('rect', { x: P.l, y: P.t, width: W - P.l - P.r, height: H - P.t - P.b }, cp);
+  const sx = o.sx || niceStep(o.xmax - o.xmin), sy = o.sy || niceStep(o.ymax - o.ymin);
+  const lx = o.lx || sx, ly = o.ly || sy;
+  const g = S('g', { class: 'grid' }, svg);
+  for (let k = Math.ceil(o.xmin / sx); k * sx <= o.xmax + 1e-9; k++) S('line', { x1: X(k * sx), x2: X(k * sx), y1: P.t, y2: H - P.b }, g);
+  for (let k = Math.ceil(o.ymin / sy); k * sy <= o.ymax + 1e-9; k++) S('line', { x1: P.l, x2: W - P.r, y1: Y(k * sy), y2: Y(k * sy) }, g);
+  const ax = S('g', { class: 'axes' }, svg);
+  const y0 = Math.min(Math.max(Y(0), P.t), H - P.b), x0 = Math.min(Math.max(X(0), P.l), W - P.r);
+  S('line', { x1: P.l, x2: W - P.r + 4, y1: y0, y2: y0 }, ax);
+  S('path', { d: `M${W - P.r + 12} ${y0} l-10 -5 v10z`, class: 'arrowhead' }, ax);
+  S('text', { x: W - P.r + 4, y: y0 - 9, class: 'axn', 'text-anchor': 'end' }, ax, 'x');
+  if (!o.noY) {
+    S('line', { x1: x0, x2: x0, y1: H - P.b, y2: P.t - 4 }, ax);
+    S('path', { d: `M${x0} ${P.t - 12} l-5 10 h10z`, class: 'arrowhead' }, ax);
+    S('text', { x: x0 + 9, y: P.t + 4, class: 'axn' }, ax, 'y');
+  }
+  for (let k = Math.ceil(o.xmin / lx); k * lx <= o.xmax + 1e-9; k++) {
+    const v = r9(k * lx); if (v === 0 || X(v) > W - P.r - 16) continue;
+    S('line', { x1: X(v), x2: X(v), y1: y0 - 4, y2: y0 + 4 }, ax);
+    S('text', { x: X(v), y: y0 + 17, class: 'tick', 'text-anchor': 'middle' }, ax, num(v));
+  }
+  for (let k = Math.ceil(o.ymin / ly); !o.noY && k * ly <= o.ymax + 1e-9; k++) {
+    const v = r9(k * ly); if (v === 0 || Y(v) < P.t + 14) continue;
+    S('line', { x1: x0 - 4, x2: x0 + 4, y1: Y(v), y2: Y(v) }, ax);
+    S('text', { x: x0 - 7, y: Y(v) + 4, class: 'tick', 'text-anchor': 'end' }, ax, num(v));
+  }
+  if (o.noY) { if (X(0) >= P.l && X(0) <= W - P.r) { S('line', { x1: X(0), x2: X(0), y1: y0 - 4, y2: y0 + 4 }, ax); S('text', { x: X(0), y: y0 + 17, class: 'tick', 'text-anchor': 'middle' }, ax, '0'); } }
+  else S('text', { x: x0 - 6, y: y0 + 16, class: 'tick', 'text-anchor': 'end' }, ax, '0');
+  return { svg, X, Y, P, W, H, cid, o, y0, x0 };
+}
+function drawSegs(g, segs, X, y, xmin, xmax, cls = 'solband') {
+  const cx = v => X(Math.min(Math.max(v, xmin), xmax));
+  segs.forEach(s => {
+    const a = s.lo.inf ? xmin : s.lo.p.v, b = s.hi.inf ? xmax : s.hi.p.v;
+    if (!(s.lo.p && s.lo.p === s.hi.p)) S('line', { x1: cx(a), x2: cx(b), y1: y, y2: y, class: cls }, g);
+  });
+  if (cls !== 'solband') return;
+  segs.forEach(s => {
+    if (s.lo.p && s.lo.p.v >= xmin && s.lo.p.v <= xmax) S('circle', { cx: X(s.lo.p.v), cy: y, r: 6.5, class: s.lo.inc ? 'ep-in' : 'ep-out' }, g);
+    if (s.hi.p && s.hi.p !== s.lo.p && s.hi.p.v >= xmin && s.hi.p.v <= xmax) S('circle', { cx: X(s.hi.p.v), cy: y, r: 6.5, class: s.hi.inc ? 'ep-in' : 'ep-out' }, g);
+  });
+}
+function crossAt(g, x, y, r = 8, cls = 'cross') { S('path', { d: `M${x - r} ${y - r}L${x + r} ${y + r}M${x + r} ${y - r}L${x - r} ${y + r}`, class: cls }, g); }
+
+/* ================= schede ================= */
+const TABS = ['bilancia', 'parabola', 'castello', 'dominio'];
+function showTab(id, focus) {
+  TABS.forEach(t => {
+    const on = t === id;
+    $('#t-' + t).setAttribute('aria-selected', String(on));
+    $('#t-' + t).tabIndex = on ? 0 : -1;
+    $('#' + t).hidden = !on;
+  });
+  try { localStorage.setItem('vpc-tab', id); } catch (e) { }
+  if (focus) $('#t-' + id).focus();
+  if (id === 'castello') updC();
+}
+TABS.forEach((t, i) => {
+  const b = $('#t-' + t);
+  b.addEventListener('click', () => { showTab(t); history.replaceState(null, '', '#' + t); });
+  b.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      const j = (i + (e.key === 'ArrowRight' ? 1 : TABS.length - 1)) % TABS.length;
+      showTab(TABS[j], true);
+    }
+  });
+});
+
+/* ================= SCHEDA 1: la bilancia ================= */
+const L1 = {};
+function initLine1() {
+  const svg = $('#b-line'); clear(svg);
+  const X = v => 40 + (v + 16) * 20; L1.X = X;
+  [[62, 'prima: A e B'], [152, 'dopo: k·A e k·B']].forEach(([y, t]) => {
+    S('text', { x: 30, y: y - 34, class: 'cap-t' }, svg, t);
+    S('line', { x1: 26, x2: 694, y1: y, y2: y, class: 'nl-axis' }, svg);
+    S('path', { d: `M704 ${y} l-11 -5.5 v11z`, class: 'arrowhead' }, svg);
+    for (let v = -16; v <= 16; v++) {
+      const big = v % 5 === 0;
+      S('line', { x1: X(v), x2: X(v), y1: y - (big ? 7 : 4), y2: y + (big ? 7 : 4), class: 'nl-tick' }, svg);
+      if (big) S('text', { x: X(v), y: y + 25, class: 'nl-num', 'text-anchor': 'middle' }, svg, num(v));
+    }
+  });
+  S('line', { x1: X(0), x2: X(0), y1: 40, y2: 170, class: 'zero-mark' }, svg);
+  const mk = (cls, t, y) => {
+    const g = S('g', { class: 'pt ' + cls }, svg);
+    S('circle', { cx: 0, cy: y, r: t.length > 1 ? 13 : 11 }, g);
+    S('text', { x: 0, y: y + 4.5, 'text-anchor': 'middle', class: 'pt-t' }, g, t);
+    return g;
+  };
+  L1.A0 = mk('pa', 'A', 62); L1.B0 = mk('pb', 'B', 62);
+  L1.A1 = mk('pa', 'kA', 152); L1.B1 = mk('pb', 'kB', 152);
+}
+const place = (g, v) => { g.style.transform = `translateX(${L1.X(v)}px)`; };
+function clampIn(el, lo, hi) { let v = Math.round(+el.value); if (!isFinite(v)) v = 0; v = Math.max(lo, Math.min(hi, v)); return v; }
+function updK() {
+  const A = clampIn($('#b-A'), -5, 5), B = clampIn($('#b-B'), -5, 5), k = +$('#b-k').value;
+  $('#b-kout').textContent = num(k);
+  place(L1.A0, A); place(L1.B0, B); place(L1.A1, k * A); place(L1.B1, k * B);
+  const rel0 = A < B ? '<' : A > B ? '>' : '=';
+  $('#b-r1l').textContent = num(A); $('#b-r1r').textContent = num(B);
+  $('#b-r1s').innerHTML = sym(rel0);
+  $('#b-r2l').textContent = num(k * A); $('#b-r2r').textContent = num(k * B);
+  const el = $('#b-r2s'), msg = $('#b-msg');
+  if (rel0 === '=') {
+    setFlip(el, '=', false);
+    msg.className = 'note'; msg.innerHTML = 'Scegli due numeri <b>diversi</b> per A e B.';
+  } else if (k === 0) {
+    setFlip(el, '=', false);
+    msg.className = 'note neg';
+    msg.innerHTML = `Con k = 0 entrambi i numeri diventano 0: la disuguaglianza <b>sparisce</b>. Per questo non si moltiplica per 0 e, soprattutto, <b>non si divide per 0</b>.`;
+  } else if (k > 0) {
+    setFlip(el, rel0, false);
+    msg.className = 'note pos';
+    msg.innerHTML = `k è <b>positivo</b>: i punti si allontanano o si avvicinano, ma restano nello <b>stesso ordine</b>. Il verso non cambia.`;
+  } else {
+    setFlip(el, rel0, true);
+    msg.className = 'note flip';
+    msg.innerHTML = `k è <b>negativo</b>: la retta si è <b>ribaltata</b> attorno allo 0 e i due punti si sono <b>scambiati di posto</b>. Per questo il verso <b class="fl">si gira</b>.`;
+  }
+}
+['#b-A', '#b-B', '#b-k'].forEach(s => $(s).addEventListener('input', updK));
+
+/* parte B: risolvere a x + b REL c */
+const B1 = { a: -2, b: 0, c: 6, rel: '>', d: 1 };
+const PRE1 = [[-2, 0, 6, '>'], [3, -1, 8, '<='], [-1, 4, 1, '<'], [5, 0, -10, '>='], [-4, 2, 10, '>=']];
+function coefX(a, d) {
+  const r = ratio(a, d);
+  if (r && r.q === 1) return r.p === 1 ? 'x' : r.p === -1 ? MINUS + 'x' : num(r.p) + 'x';
+  return fracHTML(a, d) + 'x';
+}
+function lineSvg(svg, segs, xmin, xmax) {
+  const F = frame(svg, { W: 640, H: 70, xmin, xmax, ymin: -1, ymax: 1, sx: 1, sy: 10, lx: 1, noY: true });
+  $$('.grid', svg).forEach(g => g.remove());
+  const g = S('g', null, svg);
+  drawSegs(g, segs, F.X, F.y0, xmin, xmax);
+  return F;
+}
+function buildPresets(host, list, label, onPick) {
+  clear(host);
+  list.forEach((p, i) => {
+    const bt = document.createElement('button');
+    bt.type = 'button'; bt.className = 'chip'; bt.innerHTML = label(p);
+    bt.addEventListener('click', () => { onPick(p); $$('.chip', host).forEach(c => c.setAttribute('aria-pressed', String(c === bt))); });
+    host.appendChild(bt);
+  });
+}
+function updB() {
+  const { a, b, c, rel, d } = B1;
+  const R = c - b;
+  $('#b-s1').innerHTML = `<span>${poly([a, b])}</span>${sym(rel)}<span>${num(c)}</span>`;
+  $('#b-s2row').hidden = b === 0;
+  $('#b-s2').innerHTML = `<span>${poly([a, 0])}</span>${sym(rel)}<span>${num(c)} ${b > 0 ? MINUS : '+'} ${num(Math.abs(b))}</span>${sym('arrow')}<span>${poly([a, 0])}</span>${sym(rel)}<span>${num(R)}</span>`;
+  $('#b-dout').textContent = num(d);
+  const s3 = $('#b-s3msg'), res = $('#b-result'), fl = $('#b-s3s');
+  if (a === 0) {
+    $('#b-s3l').innerHTML = ''; $('#b-s3r').innerHTML = ''; setFlip(fl, rel, false);
+    s3.className = 'note neg'; s3.innerHTML = 'Con coefficiente di x uguale a 0 non c\'è più la x: scegli un coefficiente diverso da 0.';
+    res.innerHTML = ''; return;
+  }
+  if (d === 0) {
+    $('#b-s3l').innerHTML = `${poly([a, 0])} : 0`; $('#b-s3r').innerHTML = `${num(R)} : 0`;
+    setFlip(fl, rel, false);
+    s3.className = 'note neg';
+    s3.innerHTML = `${sym('warn')} <b>Non si può dividere per 0!</b> Sposta il cursore.`;
+    res.innerHTML = ''; return;
+  }
+  $('#b-s3l').innerHTML = coefX(a, d);
+  $('#b-s3r').innerHTML = fracHTML(R, d);
+  setFlip(fl, rel, d < 0);
+  if (d < 0) { s3.className = 'note flip'; s3.innerHTML = `Hai diviso per un numero <b>negativo</b> (${num(d)}): il verso <b class="fl">si è girato</b>.`; }
+  else { s3.className = 'note'; s3.innerHTML = `Hai diviso per un numero <b>positivo</b>: il verso resta com'è.`; }
+  if (d !== a) {
+    res.innerHTML = `<p class="note">La x non è ancora da sola. Per isolarla dividi per il <b>coefficiente di x</b>, cioè per <b>${num(a)}</b>.</p>`;
+    return;
+  }
+  const relF = a < 0 ? FLIP[rel] : rel, s = R / a;
+  let t = relF[0] === '>' ? Math.floor(s) + 1 : Math.ceil(s) - 1;
+  const lhs = a * t + b;
+  let html = `<div class="note pos"><div class="cap">Soluzione</div><div class="bigmath">x ${sym(relF)} ${fracHTML(R, a)}</div></div>`;
+  html += `<div class="scroll"><svg id="b-sol" class="graph" style="min-width:420px" role="img" aria-label="Soluzione sulla retta"></svg></div>`;
+  html += `<div class="note"><div class="cap">Controllo con un numero</div>
+    <div class="calc">x = ${num(t)}: ${sym('arrow')} ${subst([a, b], t)} = ${num(lhs)} ${sym(rel)} ${num(c)} &nbsp;<span class="good">${sym('ok')} vero</span></div>`;
+  if (a < 0) html += `<p style="margin-top:6px">Se <b>non</b> avessi girato il verso avrei scritto x ${sym(rel)} ${fracHTML(R, a)}. Ma ${num(t)} ${sym(rel)} ${fracHTML(R, a)} è <b class="bad">falso ${sym('no')}</b>: quella risposta avrebbe escluso un numero che funziona.</p>`;
+  html += `</div>`;
+  res.innerHTML = html;
+  const sol = solveSign([[a, b - c]], [], rel);
+  const x0 = Math.floor(s);
+  lineSvg($('#b-sol'), sol.segs, x0 - 6, x0 + 7);
+}
+function readB() {
+  B1.a = Math.round(+$('#b-a').value) || 0; B1.b = Math.round(+$('#b-b').value) || 0; B1.c = Math.round(+$('#b-c').value) || 0;
+  updB();
+}
+['#b-a', '#b-b', '#b-c'].forEach(s => $(s).addEventListener('input', readB));
+$('#b-d').addEventListener('input', () => { B1.d = +$('#b-d').value; updB(); });
+function setB(a, b, c, rel) {
+  Object.assign(B1, { a, b, c, rel, d: 1 });
+  $('#b-a').value = a; $('#b-b').value = b; $('#b-c').value = c; $('#b-d').value = 1;
+  syncSeg($('#b-relseg'), rel); updB();
+}
+
+/* quiz 1 */
+const Q1 = { right: 0, tot: 0 };
+function newQ1() {
+  let a; do { a = randInt(-5, 5); } while (a === 0 || a === 1);
+  if (a > 0 && Math.random() < 0.6) a = -a;
+  let s; do { s = randInt(-6, 6); } while (s === 0);
+  const b = randInt(-8, 8), c = a * s + b, rel = pick(['>', '<', '>=', '<=']);
+  const rf = a < 0 ? FLIP[rel] : rel, rw = FLIP[rf];
+  const opts = shuffle([{ rel: rf, v: s, ok: true }, { rel: rw, v: s, kind: 'verso' }, { rel: rf, v: -s, kind: 'segno' }, { rel: rw, v: -s, kind: 'entrambi' }]);
+  $('#q1-text').innerHTML = `${poly([a, b])} ${sym(rel)} ${num(c)}`;
+  const host = $('#q1-opts'); clear(host);
+  const fb = $('#q1-fb'); fb.hidden = true;
+  let done = false;
+  opts.forEach(o => {
+    const bt = document.createElement('button');
+    bt.type = 'button'; bt.className = 'opt'; bt.innerHTML = `x ${sym(o.rel)} ${num(o.v)}`;
+    bt.addEventListener('click', () => {
+      if (done) return; done = true; Q1.tot++;
+      $$('.opt', host).forEach((x, i) => { if (opts[i].ok) x.classList.add('right'); });
+      fb.hidden = false;
+      if (o.ok) { Q1.right++; bt.classList.add('right'); fb.className = 'note pos'; fb.innerHTML = `${sym('ok')} <b>Giusto!</b> ${a < 0 ? `Hai diviso per ${num(a)}, che è negativo, e hai girato il verso.` : `Hai diviso per ${num(a)}, che è positivo: il verso resta.`}`; }
+      else {
+        bt.classList.add('wrong'); fb.className = 'note neg';
+        fb.innerHTML = o.kind === 'segno' ? `Attento ai conti: ${poly([a, 0])} ${sym(rel)} ${num(c)} ${b >= 0 ? MINUS : '+'} ${num(Math.abs(b))}, cioè ${poly([a, 0])} ${sym(rel)} ${num(c - b)}. Poi dividi per ${num(a)}.`
+          : a < 0 ? `Il coefficiente di x è <b>${num(a)}</b>, negativo: dividendo il verso <b class="fl">si gira</b>.`
+            : `Il coefficiente di x è <b>${num(a)}</b>, positivo: dividendo il verso <b>non</b> cambia.`;
+      }
+      $('#q1-score').textContent = `${Q1.right} giuste su ${Q1.tot}`;
+    });
+    host.appendChild(bt);
+  });
+}
+$('#q1-new').addEventListener('click', newQ1);
+
+/* ================= SCHEDA 2: la parabola ================= */
+const AV = [-3, -2, -1, 1, 2, 3];
+const P2 = { a: 1, b: -2, c: -3, rel: '>' };
+const PRE2 = [['Due intersezioni', 1, -2, -3], ['Tangente', 1, -4, 4], ['Nessuna intersezione', 1, -2, 5], ['a negativo', -1, 2, 3]];
+function drawParab(F, co, cls) {
+  const g = S('g', { 'clip-path': `url(#${F.cid})` }, F.svg);
+  const { xmin, xmax, ymin, ymax } = F.o;
+  const zs = cls ? [] : (factorZeros(co) || []).map(z => z.v).filter(v => v > xmin && v < xmax);
+  const br = [xmin, ...zs, xmax];
+  for (let i = 0; i < br.length - 1; i++) {
+    const u = br[i], v = br[i + 1], s = sgn(evalPoly(co, (u + v) / 2));
+    let d = '';
+    for (let k = 0; k <= 90; k++) {
+      const x = u + (v - u) * k / 90;
+      const y = Math.max(Math.min(evalPoly(co, x), ymax * 3), ymin * 3);
+      d += (k ? 'L' : 'M') + F.X(x).toFixed(1) + ' ' + F.Y(y).toFixed(1);
+    }
+    S('path', { d, class: 'curve ' + (cls || (s > 0 ? 'pos' : s < 0 ? 'neg' : '')) }, g);
+  }
+  return g;
+}
+function subLabel(g, x, y, base, sub, val, anchor = 'middle') {
+  const t = S('text', { x, y, class: 'lbl-t', 'text-anchor': anchor }, g);
+  S('tspan', null, t, base);
+  if (sub) S('tspan', { 'baseline-shift': 'sub', 'font-size': '75%' }, t, sub);
+  S('tspan', null, t, ' = ' + val);
+}
+function updP() {
+  const { a, b, c, rel } = P2;
+  $('#p-aout').textContent = num(a); $('#p-bout').textContent = num(b); $('#p-cout').textContent = num(c);
+  const neg = a < 0, A = neg ? -a : a, Bn = neg ? -b : b, C = neg ? -c : c, relN = neg ? FLIP[rel] : rel;
+  $('#p-orig').innerHTML = `${poly([a, b, c])} ${sym(rel)} 0`;
+  $('#p-nl').innerHTML = poly([A, Bn, C]);
+  const nm = $('#p-normmsg');
+  requestAnimationFrame(() => setFlip($('#p-ns'), rel, neg));
+  if (neg) { nm.className = 'note flip'; nm.innerHTML = `a è <b>negativo</b>: moltiplico tutto per ${MINUS}1 e <b class="fl">giro il verso</b>. Ora la parabola è rivolta verso l'alto (a sorriso). Quella tratteggiata grigia è la parabola di partenza.`; }
+  else { nm.className = 'note'; nm.innerHTML = `a è già positivo: la parabola è rivolta verso l'alto (a sorriso). Non serve cambiare nulla.`; }
+  const D = b * b - 4 * a * c;
+  $('#p-delta').innerHTML = `${sym('delta')} = b<sup>2</sup> ${MINUS} 4ac = (${num(b)})<sup>2</sup> ${MINUS} 4·(${num(a)})·(${num(c)}) = <b>${num(D)}</b>`;
+  const sc = D > 0 ? 0 : D === 0 ? 1 : 2;
+  $('#p-badges').innerHTML = [
+    `${sym('delta')} ${sym('>')} 0: due intersezioni`, `${sym('delta')} ${sym('=')} 0: una sola (tangente)`, `${sym('delta')} ${sym('<')} 0: nessuna intersezione`
+  ].map((t, i) => `<span class="badge ${i === sc ? 'on' : ''}">${t}</span>`).join('');
+
+  const co = [A, Bn, C], zs = factorZeros(co);
+  const xv = -Bn / (2 * A), yv = C - Bn * Bn / (4 * A);
+  let lo = Math.min(-6, Math.floor(xv) - 4), hi = Math.max(6, Math.ceil(xv) + 4);
+  if (zs.length) { lo = Math.min(lo, Math.floor(zs[0].v) - 2); hi = Math.max(hi, Math.ceil(zs[zs.length - 1].v) + 2); }
+  const R = Math.min(40, Math.max(6, Math.ceil(Math.abs(yv)) + 2));
+  const F = frame($('#p-graph'), { W: 640, H: 430, xmin: lo, xmax: hi, ymin: -R, ymax: R, sx: 1, lx: hi - lo > 16 ? 2 : 1, sy: R > 12 ? niceStep(2 * R) : 1, ly: R > 12 ? niceStep(2 * R) : 2 });
+  const sol = solveSign([co], [], relN);
+  const band = S('g', null, F.svg);
+  drawSegs(band, sol.segs, F.X, F.y0, lo, hi);
+  if (neg) drawParab(F, [a, b, c], 'ghost');
+  drawParab(F, co);
+  const g = S('g', null, F.svg);
+  if (zs.length === 2) {
+    zs.forEach((z, i) => {
+      S('circle', { cx: F.X(z.v), cy: F.y0, r: 6.5, class: 'root' }, g);
+      subLabel(g, F.X(z.v), F.y0 - 14, 'x', String(i + 1), z.txt, i ? 'start' : 'end');
+    });
+  } else if (zs.length === 1) {
+    S('circle', { cx: F.X(zs[0].v), cy: F.y0, r: 6.5, class: 'root' }, g);
+    subLabel(g, F.X(zs[0].v), F.y0 + 30, 'x', '0', zs[0].txt);
+    S('text', { x: F.X(zs[0].v), y: F.y0 - 14, class: 'lbl-m', 'text-anchor': 'middle' }, g, 'il vertice tocca l\'asse');
+  } else {
+    S('text', { x: F.X(xv), y: Math.max(F.Y(yv) + 26, F.P.t + 30), class: 'lbl-m', 'text-anchor': 'middle' }, g, 'la parabola "galleggia" sopra l\'asse x');
+  }
+  $('#p-cap').innerHTML = `Tratti <b class="good">verdi continui</b>: trinomio positivo. Tratti <b class="bad">rossi tratteggiati</b>: trinomio negativo. La fascia blu sull'asse x mostra la soluzione.`;
+
+  const strict = relN.length === 1, pos = relN[0] === '>';
+  let read = pos ? `Cerco dove la parabola sta <b class="good">sopra</b> l'asse x${strict ? '' : ' <b>o lo tocca</b>'} (tratti verdi).`
+    : `Cerco dove la parabola sta <b class="bad">sotto</b> l'asse x${strict ? '' : ' <b>o lo tocca</b>'} (tratti rossi).`;
+  if (zs.length === 2) read += pos ? ' Sono i valori <b>esterni</b> alle radici.' : ' Sono i valori <b>interni</b> alle radici.';
+  $('#p-read').innerHTML = read;
+  $('#p-sol').innerHTML = segsHTML(sol.segs) + anyApprox(sol.pts);
+}
+function setP(a, b, c, rel) {
+  Object.assign(P2, { a, b, c }); if (rel) P2.rel = rel;
+  $('#p-a').value = AV.indexOf(a); $('#p-b').value = b; $('#p-c').value = c;
+  syncSeg($('#p-relseg'), P2.rel); updP();
+}
+$('#p-a').addEventListener('input', () => { P2.a = AV[+$('#p-a').value]; updP(); });
+$('#p-b').addEventListener('input', () => { P2.b = +$('#p-b').value; updP(); });
+$('#p-c').addEventListener('input', () => { P2.c = +$('#p-c').value; updP(); });
+
+/* quiz 2 */
+const Q2 = { right: 0, tot: 0 };
+function newQ2() {
+  let r1 = randInt(-5, 3), r2 = randInt(r1 + 1, 5);
+  const co = [1, -(r1 + r2), r1 * r2], rel = pick(['>', '<', '>=', '<=']);
+  const F = frame($('#q2-graph'), { W: 520, H: 300, xmin: -7, xmax: 7, ymin: -9, ymax: 9, sx: 1, lx: 2, sy: 1, ly: 3 });
+  drawParab(F, co);
+  const g = S('g', null, F.svg);
+  [r1, r2].forEach(r => { S('circle', { cx: F.X(r), cy: F.y0, r: 5.5, class: 'root' }, g); S('text', { x: F.X(r), y: F.y0 - 11, class: 'lbl-t', 'text-anchor': 'middle' }, g, num(r)); });
+  $('#q2-text').innerHTML = `${poly(co)} ${sym(rel)} 0`;
+  const opts = [
+    { h: `${num(r1)} ${sym('<')} x ${sym('<')} ${num(r2)}`, ok: rel === '<' },
+    { h: `${num(r1)} ${sym('<=')} x ${sym('<=')} ${num(r2)}`, ok: rel === '<=' },
+    { h: `x ${sym('<')} ${num(r1)} <span class="conj">oppure</span> x ${sym('>')} ${num(r2)}`, ok: rel === '>' },
+    { h: `x ${sym('<=')} ${num(r1)} <span class="conj">oppure</span> x ${sym('>=')} ${num(r2)}`, ok: rel === '>=' }
+  ];
+  const host = $('#q2-opts'); clear(host);
+  const fb = $('#q2-fb'); fb.hidden = true; let done = false;
+  opts.forEach(o => {
+    const bt = document.createElement('button');
+    bt.type = 'button'; bt.className = 'opt'; bt.innerHTML = o.h;
+    bt.addEventListener('click', () => {
+      if (done) return; done = true; Q2.tot++;
+      $$('.opt', host).forEach((x, i) => { if (opts[i].ok) x.classList.add('right'); });
+      fb.hidden = false;
+      const where = rel[0] === '>' ? 'sopra l\'asse (verde): valori esterni' : 'sotto l\'asse (rosso): valori interni';
+      const eq = rel.length === 2 ? 'Il simbolo contiene l\'uguale, quindi le radici sono <b>comprese</b>.' : 'Il simbolo è stretto, quindi le radici sono <b>escluse</b>.';
+      if (o.ok) { Q2.right++; fb.className = 'note pos'; fb.innerHTML = `${sym('ok')} <b>Giusto!</b> Cerchi dove la parabola sta ${where}. ${eq}`; }
+      else { bt.classList.add('wrong'); fb.className = 'note neg'; fb.innerHTML = `Guarda il grafico: cerchi dove la parabola sta ${where}. ${eq}`; }
+      $('#q2-score').textContent = `${Q2.right} giuste su ${Q2.tot}`;
+    });
+    host.appendChild(bt);
+  });
+}
+$('#q2-new').addEventListener('click', newQ2);
+
+/* ================= SCHEDA 3: il castello dei segni ================= */
+const C3 = { factors: [{ w: 'N', co: [1, -2] }, { w: 'D', co: [1, 3] }], rel: '>', ex: false, guesses: [], checked: false };
+const PRE3 = [
+  { f: [['N', [1, -2]], ['D', [1, 3]]], rel: '>' },
+  { f: [['N', [1, 1]], ['D', [1, -4]]], rel: '<=' },
+  { f: [['N', [1, -1]], ['N', [1, 2]], ['D', [1, -3]]], rel: '>=' },
+  { f: [['N', [2, -6]], ['D', [1, 0, -4]]], rel: '<' },
+  { f: [['N', [1, 0, 1]], ['D', [1, -1]]], rel: '>' },
+  { f: [['N', [1, -2, 1]], ['D', [1, 2]]], rel: '<=' }
+];
+function prodHTML(list) {
+  if (!list.length) return '1';
+  if (list.length === 1) return poly(list[0]);
+  return list.map(co => `(${poly(co)})`).join('');
+}
+function fracExpr(N, D) { return D.length ? frac(prodHTML(N), prodHTML(D)) : prodHTML(N); }
+function renderEditor() {
+  const host = $('#c-facs'); clear(host);
+  C3.factors.forEach((f, idx) => {
+    const row = document.createElement('div'); row.className = 'fac';
+    const wseg = document.createElement('span'); wseg.className = 'seg';
+    [['N', 'Numeratore'], ['D', 'Denominatore']].forEach(([w, t]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'segbtn txt'; b.textContent = t;
+      b.setAttribute('aria-pressed', String(f.w === w));
+      b.addEventListener('click', () => { f.w = w; renderEditor(); updC(true); });
+      wseg.appendChild(b);
+    });
+    const dseg = document.createElement('span'); dseg.className = 'seg';
+    [[2, '1° grado'], [3, '2° grado']].forEach(([len, t]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'segbtn txt'; b.textContent = t;
+      b.setAttribute('aria-pressed', String(f.co.length === len));
+      b.addEventListener('click', () => {
+        if (f.co.length === len) return;
+        f.co = len === 3 ? [1, 0, f.co[1]] : [f.co[1] || 1, f.co[2]];
+        renderEditor(); updC(true);
+      });
+      dseg.appendChild(b);
+    });
+    const pl = document.createElement('span'); pl.className = 'poly';
+    const names = f.co.length === 3 ? ['x² +', 'x +', ''] : ['x +', ''];
+    f.co.forEach((c, k) => {
+      const inp = document.createElement('input'); inp.type = 'number'; inp.step = '1'; inp.value = c;
+      inp.id = `c-f${idx}-${k}`; inp.setAttribute('aria-label', `coefficiente ${k + 1} del fattore ${idx + 1}`);
+      inp.addEventListener('input', () => { f.co[k] = Math.round(+inp.value) || 0; updC(true); });
+      pl.appendChild(inp);
+      if (names[k]) { const s = document.createElement('span'); s.className = 'x'; s.textContent = names[k]; pl.appendChild(s); }
+    });
+    const del = document.createElement('button'); del.type = 'button'; del.className = 'iconbtn'; del.innerHTML = sym('times');
+    del.setAttribute('aria-label', 'Elimina fattore'); del.disabled = C3.factors.length <= 1;
+    del.addEventListener('click', () => { C3.factors.splice(idx, 1); renderEditor(); updC(true); });
+    const err = document.createElement('span'); err.className = 'errmsg'; err.id = `c-err${idx}`;
+    row.append(wseg, dseg, pl, del, err);
+    host.appendChild(row);
+  });
+  $('#c-addN').disabled = $('#c-addD').disabled = C3.factors.length >= 4;
+}
+function updC(structural) {
+  const valid = [];
+  C3.factors.forEach((f, i) => {
+    const bad = f.co[0] === 0;
+    const e = $('#c-err' + i); if (e) e.textContent = bad ? 'Il primo coefficiente non può essere 0.' : '';
+    e && e.parentElement.classList.toggle('err', bad);
+    if (!bad) valid.push(f);
+  });
+  const N = valid.filter(f => f.w === 'N').map(f => f.co), D = valid.filter(f => f.w === 'D').map(f => f.co);
+  $('#c-expr').innerHTML = `${fracExpr(N, D)} ${sym(C3.rel)} 0`;
+  const svg = $('#c-svg'); clear(svg);
+  if (!valid.length) { $('#c-sol').innerHTML = 'Inserisci almeno un fattore.'; $('#c-ce').hidden = true; return; }
+  const R = solveSign(N, D, C3.rel);
+  const dz = R.pts.filter(p => p.dz);
+  $('#c-ce').hidden = !D.length;
+  $('#c-ce').innerHTML = !D.length ? '' : dz.length
+    ? `${sym('warn')} <b>Condizione di esistenza:</b> il denominatore non può essere zero, quindi ${dz.map(p => M(`x ${sym('!=')} ${p.html}`)).join(' <span class="conj">e</span> ')}.`
+    : `${sym('warn')} <b>Condizione di esistenza:</b> il denominatore non si annulla mai, nessun valore vietato.`;
+  if (structural || C3.guesses.length !== R.final.length) { C3.guesses = R.final.map(() => 0); C3.checked = false; $('#c-exfb').hidden = true; }
+  drawCastle(svg, R, valid);
+  const hide = C3.ex && !C3.checked;
+  $('#c-solbox').hidden = hide;
+  $('#c-check').hidden = !C3.ex;
+  $('#c-sol').innerHTML = segsHTML(R.segs) + anyApprox(R.pts);
+  C3.last = R;
+}
+function drawCastle(svg, R, valid) {
+  const n = R.pts.length, LAB = 170, colW = n > 3 ? 96 : 116, W = LAB + (n + 1) * colW + 16;
+  const rowsN = R.rows.length, ROWH = 46, top = 44;
+  const yFinal = top + 24 + rowsN * ROWH + 26, ySol = yFinal + 64, H = ySol + 30;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.style.width = '100%'; svg.style.minWidth = Math.round(W * 0.78) + 'px';
+  const px = k => LAB + (k + 1) * colW;
+  const ix0 = i => i === 0 ? LAB : px(i - 1), ix1 = i => i === n ? LAB + (n + 1) * colW : px(i);
+  const hide = C3.ex && !C3.checked;
+  // intestazione: retta con i punti critici
+  S('line', { x1: LAB, x2: W - 6, y1: top, y2: top, class: 'c-hdr' }, svg);
+  S('path', { d: `M${W - 2} ${top} l-10 -5 v10z`, class: 'arrowhead' }, svg);
+  S('text', { x: 10, y: top + 5, class: 'c-labs' }, svg, 'VALORI DI x');
+  R.pts.forEach((p, k) => {
+    S('line', { x1: px(k), x2: px(k), y1: top - 6, y2: ySol, class: 'c-guide' }, svg);
+    S('text', { x: px(k), y: top - 12, class: 'c-pt', 'text-anchor': 'middle' }, svg, p.txt);
+  });
+  // righe dei fattori
+  R.rows.forEach((r, j) => {
+    const y = top + 24 + j * ROWH + 18;
+    const lab = S('text', { x: 10, y: y + 5, class: 'c-lab' }, svg);
+    S('tspan', { class: 'c-labs' }, lab, r.where === 'N' ? 'NUM  ' : 'DEN  ');
+    S('tspan', null, lab, poly(r.co, 'text'));
+    for (let i = 0; i <= n; i++) {
+      const a = ix0(i) + 9, b = ix1(i) - 9, s = r.signs[i];
+      S('line', { x1: a, x2: b, y1: y, y2: y, class: s > 0 ? 'c-pos' : 'c-neg' }, svg);
+      S('text', { x: (a + b) / 2, y: y - 9, class: s > 0 ? 'c-sp' : 'c-sn', 'text-anchor': 'middle' }, svg, s > 0 ? '+' : MINUS);
+    }
+    r.zeros.forEach(k => {
+      if (r.where === 'D') crossAt(svg, px(k), y, 8);
+      else { S('circle', { cx: px(k), cy: y, r: 10, class: 'c-zero' }, svg); S('text', { x: px(k), y: y + 4.5, class: 'c-zt', 'text-anchor': 'middle' }, svg, '0'); }
+    });
+  });
+  // riga finale
+  S('line', { x1: 10, x2: W - 6, y1: yFinal - 30, y2: yFinal - 30, class: 'c-hdr', style: 'stroke-width:1.2' }, svg);
+  const fl = S('text', { x: 10, y: yFinal + 5, class: 'c-lab' }, svg);
+  S('tspan', { class: 'c-labs' }, fl, 'SEGNO FINALE');
+  for (let i = 0; i <= n; i++) {
+    const a = ix0(i) + 6, b = ix1(i) - 6;
+    let cls = 'c-cell';
+    if (hide) cls += ' click';
+    else if (R.iOk[i]) cls += ' on';
+    if (C3.ex && C3.checked) cls += C3.guesses[i] === R.final[i] ? ' right' : ' wrong';
+    const rect = S('rect', { x: a, y: yFinal - 20, width: b - a, height: 40, rx: 8, class: cls }, svg);
+    const val = hide ? C3.guesses[i] : R.final[i];
+    S('text', { x: (a + b) / 2, y: yFinal + 8, class: 'c-big ' + (val > 0 ? 'p' : val < 0 ? 'n' : 'q'), 'text-anchor': 'middle' }, svg, val > 0 ? '+' : val < 0 ? MINUS : '?');
+    if (hide) {
+      rect.setAttribute('tabindex', '0'); rect.setAttribute('role', 'button');
+      rect.setAttribute('aria-label', `Casella ${i + 1}: scegli il segno`);
+      const cyc = () => { C3.guesses[i] = C3.guesses[i] === 1 ? -1 : 1; drawCastleAgain(); };
+      rect.addEventListener('click', cyc);
+      rect.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); cyc(); } });
+    }
+  }
+  R.pts.forEach((p, k) => {
+    if (p.dz) { S('rect', { x: px(k) - 13, y: yFinal - 13, width: 26, height: 26, rx: 5, style: 'fill:var(--neg-soft)' }, svg); crossAt(svg, px(k), yFinal, 9); }
+    else { S('circle', { cx: px(k), cy: yFinal, r: 11, class: 'c-zero' }, svg); S('text', { x: px(k), y: yFinal + 4.5, class: 'c-zt', 'text-anchor': 'middle' }, svg, '0'); }
+  });
+  // riga della soluzione
+  const sl = S('text', { x: 10, y: ySol + 5, class: 'c-lab' }, svg);
+  S('tspan', { class: 'c-labs' }, sl, 'SOLUZIONE');
+  S('line', { x1: LAB, x2: W - 6, y1: ySol, y2: ySol, class: 'c-hdr', style: 'stroke-width:1.5' }, svg);
+  if (!hide) {
+    const X = v => v === -Infinity ? LAB : v === Infinity ? W - 6 : px(R.pts.findIndex(p => p.v === v));
+    const g = S('g', null, svg);
+    R.segs.forEach(s => {
+      const a = s.lo.inf ? LAB : X(s.lo.p.v), b = s.hi.inf ? W - 6 : X(s.hi.p.v);
+      if (a !== b) S('line', { x1: a, x2: b, y1: ySol, y2: ySol, class: 'solband' }, g);
+      if (s.lo.p) S('circle', { cx: a, cy: ySol, r: 6.5, class: s.lo.inc ? 'ep-in' : 'ep-out' }, g);
+      if (s.hi.p && s.hi.p !== s.lo.p) S('circle', { cx: b, cy: ySol, r: 6.5, class: s.hi.inc ? 'ep-in' : 'ep-out' }, g);
+    });
+  }
+}
+function drawCastleAgain() { const valid = C3.factors.filter(f => f.co[0] !== 0); clear($('#c-svg')); drawCastle($('#c-svg'), C3.last, valid); }
+$('#c-check').addEventListener('click', () => {
+  const R = C3.last; if (!R) return;
+  if (C3.guesses.some(g => g === 0)) { const fb = $('#c-exfb'); fb.hidden = false; fb.className = 'note'; fb.textContent = 'Completa prima tutte le caselle con il punto interrogativo.'; return; }
+  C3.checked = true;
+  const ok = C3.guesses.filter((g, i) => g === R.final[i]).length;
+  const fb = $('#c-exfb'); fb.hidden = false;
+  if (ok === R.final.length) { fb.className = 'note pos'; fb.innerHTML = `${sym('ok')} <b>Tutte giuste!</b> Ora guarda quali caselle soddisfano la richiesta: sono evidenziate in blu.`; }
+  else { fb.className = 'note neg'; fb.innerHTML = `${ok} caselle giuste su ${R.final.length}. Le caselle bordate di rosso sono sbagliate: conta quanti segni ${MINUS} ci sono in quella colonna. Se sono pari il risultato è +, se sono dispari è ${MINUS}.`; }
+  $('#c-solbox').hidden = false;
+  drawCastleAgain();
+});
+$('#c-ex').addEventListener('change', () => { C3.ex = $('#c-ex').checked; updC(true); });
+$('#c-addN').addEventListener('click', () => { C3.factors.push({ w: 'N', co: [1, 1] }); renderEditor(); updC(true); });
+$('#c-addD').addEventListener('click', () => { C3.factors.push({ w: 'D', co: [1, -1] }); renderEditor(); updC(true); });
+function setC(list, rel) {
+  C3.factors = list.map(([w, co]) => ({ w, co: co.slice() })); C3.rel = rel;
+  syncSeg($('#c-relseg'), rel); renderEditor(); updC(true);
+}
+
+/* ================= SCHEDA 4: il dominio ================= */
+const FUNCS = [
+  { kind: 'frac', N: [1], D: [1, -2] },
+  { kind: 'sqrt', R: [1, -1] },
+  { kind: 'frac', N: [1, 1], D: [1, 0, -4] },
+  { kind: 'sqrt', R: [-2, 6] },
+  { kind: 'invsqrt', R: [1, 3] },
+  { kind: 'sqrtfrac', N: [1, -1], D: [1, 2] },
+  { kind: 'sqrt', R: [1, -4, 3] },
+  { kind: 'frac', N: [1, 0], D: [1, 0, 1] }
+];
+function fnHTML(F) {
+  if (F.kind === 'frac') return frac(poly(F.N), poly(F.D));
+  if (F.kind === 'sqrt') return rad(poly(F.R));
+  if (F.kind === 'invsqrt') return frac('1', rad(poly(F.R)));
+  return rad(frac(poly(F.N), poly(F.D)));
+}
+function evalF(F, x) {
+  if (F.kind === 'frac') { const d = evalPoly(F.D, x); return d === 0 ? { err: 'div0', d } : { y: evalPoly(F.N, x) / d }; }
+  const r = F.kind === 'sqrtfrac' ? null : evalPoly(F.R, x);
+  if (F.kind === 'sqrt') return r < 0 ? { err: 'sqrtneg', r } : { y: Math.sqrt(r) };
+  if (F.kind === 'invsqrt') return r < 0 ? { err: 'sqrtneg', r } : r === 0 ? { err: 'div0' } : { y: 1 / Math.sqrt(r) };
+  const d = evalPoly(F.D, x); if (d === 0) return { err: 'div0' };
+  const q = r9(evalPoly(F.N, x) / d); return q < 0 ? { err: 'sqrtneg', r: q } : { y: Math.sqrt(q) };
+}
+const yOut = y => Math.abs(y - Math.round(y * 100) / 100) > 1e-9 ? `${sym('approx')} ${num(y)}` : `= ${num(y)}`;
+function calcHTML(F, x) {
+  const e = evalF(F, x), fx = `f(${num(x)})`;
+  let h;
+  if (F.kind === 'frac') {
+    const nv = evalPoly(F.N, x), dv = evalPoly(F.D, x);
+    h = `${fx} = ${frac(subst(F.N, x), subst(F.D, x))} = ${frac(num(nv), num(dv))}`;
+  } else if (F.kind === 'sqrt') {
+    h = `${fx} = ${rad(subst(F.R, x))} = ${rad(num(evalPoly(F.R, x)))}`;
+  } else if (F.kind === 'invsqrt') {
+    const rv = evalPoly(F.R, x);
+    h = `${fx} = ${frac('1', rad(subst(F.R, x)))} = ${frac('1', rad(num(rv)))}`;
+    if (rv === 0) h += ` = ${frac('1', '0')}`;
+  } else {
+    const nv = evalPoly(F.N, x), dv = evalPoly(F.D, x);
+    h = `${fx} = ${rad(frac(subst(F.N, x), subst(F.D, x)))} = ${rad(frac(num(nv), num(dv)))}`;
+    if (dv !== 0) h += ` = ${rad(num(nv / dv))}`;
+  }
+  if (!e.err) h += ` ${yOut(e.y)}`;
+  return { e, h };
+}
+function domainOf(F) {
+  if (F.kind === 'frac') return segsExcluding(factorZeros(F.D));
+  if (F.kind === 'sqrt') return solveSign([F.R], [], '>=');
+  if (F.kind === 'invsqrt') return solveSign([F.R], [], '>');
+  return solveSign([F.N], [F.D], '>=');
+}
+const D4 = { i: 0, tries: [], trace: [], showG: false, reveal: false, cur: null };
+function renderFuncChips() {
+  const host = $('#d-funcs'); clear(host);
+  FUNCS.forEach((F, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
+    b.innerHTML = `f(x) = ${fnHTML(F)}`; b.setAttribute('aria-pressed', String(i === D4.i));
+    b.addEventListener('click', () => { D4.i = i; resetD(); renderFuncChips(); });
+    host.appendChild(b);
+  });
+}
+function resetD() {
+  D4.tries = []; D4.trace = []; D4.reveal = false; D4.showG = false; D4.cur = null;
+  $('#d-out').innerHTML = `<p class="hint">Scrivi un valore di x (anche con la virgola, come 0,5, o come frazione, come 1/2) e premi <b>Calcola</b>.</p>`;
+  $('#d-fn').innerHTML = `f(x) = ${fnHTML(FUNCS[D4.i])}`;
+  $('#d-dombox').hidden = true;
+  $('#d-showg').textContent = 'Mostra il grafico';
+  drawD();
+}
+function parseX(s) {
+  s = String(s).trim().replace(/−/g, '-').replace(/,/g, '.').replace(/\s+/g, '');
+  if (!s) return NaN;
+  if (/^-?\d+(\.\d+)?\/-?\d+(\.\d+)?$/.test(s)) { const [p, q] = s.split('/').map(Number); return q === 0 ? NaN : p / q; }
+  return /^-?\d*\.?\d+$/.test(s) ? Number(s) : NaN;
+}
+function tryX(x, predict, fromSlider) {
+  const F = FUNCS[D4.i], out = $('#d-out');
+  if (!isFinite(x)) { out.innerHTML = `<p class="note neg">Non capisco questo numero. Scrivi ad esempio 3, ${MINUS}2, 0,5 oppure 1/2.</p>`; return; }
+  x = Math.round(x * 1000) / 1000;
+  const { e, h } = calcHTML(F, x);
+  D4.cur = { x, e };
+  if (!fromSlider || !D4.tries.some(t => t.x === x)) {
+    D4.tries = D4.tries.filter(t => t.x !== x); D4.tries.push({ x, ok: !e.err });
+    if (D4.tries.length > 60) D4.tries.shift();
+  }
+  if (!e.err) D4.trace.push({ x, y: e.y });
+  let html = `<div class="calc">${h}</div>`;
+  if (e.err === 'div0') {
+    html += `<div class="alarm shake"><span class="ico">${sym('warn')}</span><span class="t">Attenzione: divisione per zero impossibile!</span>
+      <span>Per x = ${num(x)} il denominatore vale 0. Nessun numero moltiplicato per 0 dà il numeratore: il calcolo non si può fare. Quindi <b>x = ${num(x)} non sta nel dominio</b>.</span></div>`;
+  } else if (e.err === 'sqrtneg') {
+    html += `<div class="alarm shake"><span class="ico">${sym('warn')}</span><span class="t">Radice quadrata di un numero negativo: impossibile nei reali!</span>
+      <span>Sotto la radice c'è ${num(e.r)}. Nessun numero reale elevato al quadrato dà un risultato negativo. Quindi <b>x = ${num(x)} non sta nel dominio</b>.</span></div>`;
+  } else {
+    html += `<p class="note pos">${sym('ok')} Il calcolo si può fare: il punto <b>(${num(x)}; ${num(e.y)})</b> sta sul grafico. <b>x = ${num(x)} appartiene al dominio.</b></p>`;
+  }
+  if (predict) {
+    const right = (predict === 'yes') === !e.err;
+    html = `<p class="note ${right ? 'pos' : 'neg'}">${right ? sym('ok') + ' <b>Previsione giusta!</b>' : sym('no') + ' <b>Previsione sbagliata.</b> Guarda il calcolo qui sotto per capire perché.'}</p>` + html;
+  }
+  out.innerHTML = html;
+  drawD();
+}
+function drawD() {
+  const F = FUNCS[D4.i];
+  const G = frame($('#d-graph'), { W: 560, H: 400, xmin: -8, xmax: 8, ymin: -6, ymax: 6, sx: 1, lx: 2, sy: 1, ly: 2 });
+  const g = S('g', null, G.svg), gc = S('g', { 'clip-path': `url(#${G.cid})` }, G.svg);
+  if (D4.reveal) {
+    S('line', { x1: G.X(-8), x2: G.X(8), y1: G.y0, y2: G.y0, class: 'domno' }, g);
+    drawSegs(g, domainOf(F).segs, G.X, G.y0, -8, 8, 'domok');
+  }
+  if (D4.showG) {
+    let d = '', pen = false, prev = null;
+    for (let i = 0; i <= 1600; i++) {
+      const x = -8 + 16 * i / 1600, e = evalF(F, x);
+      if (e.err || !isFinite(e.y)) { pen = false; prev = null; continue; }
+      const y = Math.max(-40, Math.min(40, e.y));
+      if (prev !== null && Math.abs(y - prev) > 20) pen = false;
+      d += (pen ? 'L' : 'M') + G.X(x).toFixed(1) + ' ' + G.Y(y).toFixed(1); pen = true; prev = y;
+    }
+    S('path', { d, class: 'curve fn' }, gc);
+  }
+  D4.trace.forEach(p => { if (Math.abs(p.y) <= 6.5) S('circle', { cx: G.X(p.x), cy: G.Y(p.y), r: 2.6, class: 'trace' }, gc); });
+  D4.tries.forEach(t => {
+    if (t.x < -8 || t.x > 8) return;
+    if (t.ok) S('circle', { cx: G.X(t.x), cy: G.y0, r: 5, class: 'mk-ok' }, g);
+    else crossAt(g, G.X(t.x), G.y0, 6);
+  });
+  const c = D4.cur;
+  if (c && c.x >= -8 && c.x <= 8) {
+    if (c.e.err) {
+      S('rect', { x: G.X(c.x) - 7, y: G.P.t, width: 14, height: G.H - G.P.t - G.P.b, class: 'forbid' }, gc);
+      crossAt(g, G.X(c.x), G.y0, 10);
+      S('text', { x: G.X(c.x), y: G.y0 + 34, class: 'lbl-t', 'text-anchor': 'middle', style: 'fill:var(--neg)' }, g, 'vietato');
+    } else {
+      const inView = Math.abs(c.e.y) <= 6;
+      const yy = inView ? G.Y(c.e.y) : (c.e.y > 0 ? G.P.t + 8 : G.H - G.P.b - 8);
+      S('line', { x1: G.X(c.x), x2: G.X(c.x), y1: G.y0, y2: yy, class: 'drop' }, g);
+      if (inView) S('circle', { cx: G.X(c.x), cy: yy, r: 7.5, class: 'curpt' }, g);
+      else S('path', { d: c.e.y > 0 ? `M${G.X(c.x)} ${yy - 8} l-7 12 h14z` : `M${G.X(c.x)} ${yy + 8} l-7 -12 h14z`, class: 'curpt' }, g);
+      const right = G.X(c.x) < G.W - 140;
+      S('text', { x: G.X(c.x) + (right ? 12 : -12), y: yy + (c.e.y > 0 ? 18 : -10), class: 'lbl-t', 'text-anchor': right ? 'start' : 'end' }, g, `(${num(c.x)}; ${num(c.e.y)})`);
+    }
+  }
+  const ok = D4.tries.filter(t => t.ok).length, no = D4.tries.length - ok;
+  $('#d-tally').innerHTML = `<span class="good">${sym('ok')} ammessi: ${ok}</span><span class="bad">${sym('no')} vietati: ${no}</span>`;
+}
+function domSteps(F) {
+  const dom = domainOf(F), res = segsHTML(dom.segs) + anyApprox(dom.pts);
+  const li = (lbl, body) => `<li><span class="lbl">${lbl}</span><div class="midmath">${body}</div></li>`;
+  let h = '', link = '';
+  if (F.kind === 'frac') {
+    const zs = factorZeros(F.D);
+    h += li('Condizione', `Il denominatore non può essere zero: ${M(`${poly(F.D)} ${sym('!=')} 0`)}`);
+    h += li('Cerco dove si annulla', zs.length ? `${M(`${poly(F.D)} = 0`)} ${sym('arrow')} ${zs.map(z => M(`x = ${z.html}`)).join(' <span class="conj">oppure</span> ')}`
+      : `${M(`${poly(F.D)} = 0`)} non ha soluzioni (${sym('delta')} ${sym('<')} 0): il denominatore <b>non si annulla mai</b>.`);
+  } else if (F.kind === 'sqrt' || F.kind === 'invsqrt') {
+    const strict = F.kind === 'invsqrt';
+    h += li('Condizione', strict
+      ? `Il radicando deve essere <b>strettamente</b> positivo: ${M(`${poly(F.R)} ${sym('>')} 0`)} <span class="hint">(${sym('>=')} 0 per la radice, ${sym('!=')} 0 perché sta al denominatore)</span>`
+      : `Il radicando deve essere positivo o nullo: ${M(`${poly(F.R)} ${sym('>=')} 0`)}`);
+    const rel = strict ? '>' : '>=';
+    if (F.R.length === 2) {
+      const [a, b] = F.R;
+      let s = `${M(`${poly([a, 0])} ${sym(rel)} ${num(-b)}`)}`;
+      if (a !== 1) s += ` ${sym('arrow')} divido per ${num(a)}` + (a < 0 ? ` <b class="fl">(negativo: il verso si gira!)</b>` : '');
+      h += li('Risolvo', s);
+      link = `<button class="btn ghost" type="button" data-go="b">Risolvila nella bilancia</button>`;
+    } else link = `<button class="btn ghost" type="button" data-go="p">Guardala con la parabola</button>`;
+  } else {
+    h += li('Condizioni', `La frazione sotto radice deve essere ${M(`${sym('>=')} 0`)} e il denominatore ${M(`${sym('!=')} 0`)}: ${M(`${frac(poly(F.N), poly(F.D))} ${sym('>=')} 0`)}`);
+    link = `<button class="btn ghost" type="button" data-go="c">Risolvila nel castello dei segni</button>`;
+  }
+  h += `<li style="border-left-color:var(--pos)"><span class="lbl">Dominio</span><div class="midmath">${res}</div>${link ? `<div>${link}</div>` : ''}</li>`;
+  return h;
+}
+$('#d-try').addEventListener('click', () => tryX(parseX($('#d-x').value)));
+$('#d-x').addEventListener('keydown', e => { if (e.key === 'Enter') tryX(parseX($('#d-x').value)); });
+$('#d-pyes').addEventListener('click', () => tryX(parseX($('#d-x').value), 'yes'));
+$('#d-pno').addEventListener('click', () => tryX(parseX($('#d-x').value), 'no'));
+$('#d-slide').addEventListener('input', () => { const x = Math.round(+$('#d-slide').value * 10) / 10; $('#d-x').value = num(x); tryX(x, null, true); });
+$('#d-showg').addEventListener('click', () => { D4.showG = !D4.showG; $('#d-showg').textContent = D4.showG ? 'Nascondi il grafico' : 'Mostra il grafico'; drawD(); });
+$('#d-reset').addEventListener('click', () => { D4.tries = []; D4.trace = []; D4.cur = null; drawD(); });
+$('#d-reveal').addEventListener('click', () => {
+  D4.reveal = true; $('#d-dombox').hidden = false; $('#d-steps').innerHTML = domSteps(FUNCS[D4.i]); drawD();
+  $('#d-dombox').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' });
+});
+$('#d-steps').addEventListener('click', e => {
+  const b = e.target.closest('[data-go]'); if (!b) return;
+  const F = FUNCS[D4.i];
+  if (b.dataset.go === 'b') { setB(F.R[0], F.R[1], 0, F.kind === 'invsqrt' ? '>' : '>='); showTab('bilancia'); }
+  if (b.dataset.go === 'p') { setP(F.R[0], F.R[1], F.R[2], F.kind === 'invsqrt' ? '>' : '>='); showTab('parabola'); }
+  if (b.dataset.go === 'c') { setC([['N', F.N], ['D', F.D]], '>='); showTab('castello'); }
+  window.scrollTo({ top: 0 });
+});
+
+/* ================= avvio ================= */
+$('#p-dsym').innerHTML = sym('delta');
+$('#f-syms').innerHTML = [sym('!='), sym('<='), sym('>='), sym('delta'), rad('x')].join(' ');
+initLine1(); updK();
+relSeg($('#b-relseg'), ['>', '<', '>=', '<='], () => B1.rel, r => { B1.rel = r; updB(); });
+buildPresets($('#b-presets'), PRE1, p => `${poly([p[0], p[1]])} ${sym(p[3])} ${num(p[2])}`, p => setB(p[0], p[1], p[2], p[3]));
+setB(-2, 0, 6, '>'); newQ1();
+relSeg($('#p-relseg'), ['>', '>=', '<', '<='], () => P2.rel, r => { P2.rel = r; updP(); });
+buildPresets($('#p-presets'), PRE2, p => p[0], p => setP(p[1], p[2], p[3]));
+setP(1, -2, -3, '>'); newQ2();
+relSeg($('#c-relseg'), ['>', '>=', '<', '<='], () => C3.rel, r => { C3.rel = r; updC(false); });
+buildPresets($('#c-presets'), PRE3, p => {
+  const N = p.f.filter(f => f[0] === 'N').map(f => f[1]), D = p.f.filter(f => f[0] === 'D').map(f => f[1]);
+  return `${fracExpr(N, D)} ${sym(p.rel)} 0`;
+}, p => setC(p.f, p.rel));
+setC(PRE3[0].f, PRE3[0].rel);
+renderFuncChips(); resetD();
+let start = (location.hash || '').slice(1);
+if (!TABS.includes(start)) { try { start = localStorage.getItem('vpc-tab'); } catch (e) { start = null; } }
+showTab(TABS.includes(start) ? start : 'bilancia');
+</script>
+</body>
+</html>
